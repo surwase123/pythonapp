@@ -1,6 +1,6 @@
 FROM python:3-alpine
 WORKDIR /service
-COPY requirements.txt .
+COPY ./pythonapp
 RUN pip install -r requirements.txt
 COPY . ./
 EXPOSE 8080
