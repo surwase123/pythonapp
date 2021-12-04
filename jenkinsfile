@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh "date"
+                sh "git archive -o sattva-csrm.zip HEAD:sattva-backend/core"
+                sh "date"
+                archiveArtifacts artifacts: 'sattva-csrm.zip', followSymlinks: false
+            }
+        }
+        stage('Build Django Dev') {
+             steps {
+                 sh "date"
+                 sh "docker build -f ./sattva-backend/core/compose/local/django/Dockerfile -t sattva_dev_django ."
+                 sh "date"
+                 sh "docker image save -o sattva-csrm-django.zip sattva_dev_django"
+                 sh "date"
+                 archiveArtifacts artifacts: 'sattva-csrm-django.zip', followSymlinks: false
+             }
+         }
+         stage('Build Postgres') {
+             steps {
+                 sh "date"
+                 sh "docker build  -f ./sattva-backend/core/compose/local/postgres/Dockerfile -t sattva_dev_postgres ."
+                 sh "date"
+                 sh "docker image save -o sattva-csrm-postgres.zip sattva_dev_postgres"
+                 sh "date"
+                 archiveArtifacts artifacts: 'sattva-csrm-postgres.zip', followSymlinks: false
+             }
+         }
+         stage('Deploy QA') {
+             steps {
+                 sh "date"
+                 sh "ansible-playbook ./sattva-backend/core/deployment/playbook.qa.yml -i ./sattva-backend/core/deployment/hosts  -e ansible_python_interpreter=/usr/bin/python3.6 -e hosts_to_run=qa --private-key /var/sattva-dev.pem"
+                 sh "date"
+             }
+         }
+    }
+}
