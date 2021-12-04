@@ -4,36 +4,20 @@ pipeline {
         stage('Build') {
             steps {
                 sh "date"
-                sh "git archive -o sattva-csrm.zip HEAD:sattva-backend/core"
+                sh "git archive -o pythonapp.zip HEAD:pythonapp"
                 sh "date"
-                archiveArtifacts artifacts: 'sattva-csrm.zip', followSymlinks: false
+                archiveArtifacts artifacts: 'pythonapp.zip', followSymlinks: false
             }
         }
-        stage('Build Django Dev') {
+        stage('Build pythonapp) {
              steps {
                  sh "date"
-                 sh "docker build -f ./sattva-backend/core/compose/local/django/Dockerfile -t sattva_dev_django ."
+                 sh "docker build -f ./pythonapp/Dockerfile -t pythonapp ."
                  sh "date"
-                 sh "docker image save -o sattva-csrm-django.zip sattva_dev_django"
+                 sh "docker image save -o pythonapptest.zip pythonapp
                  sh "date"
                  archiveArtifacts artifacts: 'sattva-csrm-django.zip', followSymlinks: false
-             }
-         }
-         stage('Build Postgres') {
-             steps {
-                 sh "date"
-                 sh "docker build  -f ./sattva-backend/core/compose/local/postgres/Dockerfile -t sattva_dev_postgres ."
-                 sh "date"
-                 sh "docker image save -o sattva-csrm-postgres.zip sattva_dev_postgres"
-                 sh "date"
-                 archiveArtifacts artifacts: 'sattva-csrm-postgres.zip', followSymlinks: false
-             }
-         }
-         stage('Deploy QA') {
-             steps {
-                 sh "date"
-                 sh "ansible-playbook ./sattva-backend/core/deployment/playbook.qa.yml -i ./sattva-backend/core/deployment/hosts  -e ansible_python_interpreter=/usr/bin/python3.6 -e hosts_to_run=qa --private-key /var/sattva-dev.pem"
-                 sh "date"
+          
              }
          }
     }
