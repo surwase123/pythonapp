@@ -15,7 +15,7 @@ pipeline {
                  sh "date"
                  sh "docker build -f ./pythonapp/Dockerfile -t pythonapp ."
                  sh "date"
-                 sh "docker image save -o pythonapptest.zip pythonapp
+                 sh "docker image save -o pythonapptest.zip pythonapp"
                  sh "date"
                  archiveArtifacts artifacts: 'sattva-csrm-django.zip', followSymlinks: false
           
