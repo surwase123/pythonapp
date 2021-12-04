@@ -10,7 +10,7 @@ pipeline {
             }
         }
         
-        stage('Build pythonapp) {
+        stage('Build pythonapp') {
              steps {
                  sh "date"
                  sh "docker build -f ./pythonapp/Dockerfile -t pythonapp ."
